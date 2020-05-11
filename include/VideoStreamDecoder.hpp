@@ -24,6 +24,7 @@ private:
   AVFrame* pFrameBGR = nullptr;
   AVPacket framePacket;
   AVPixelFormat pixelFormat = AV_PIX_FMT_BGR24;
+  int streamFramerate = -1;
   int streamWidth = 0;
   int streamHeight = 0;
 
@@ -40,6 +41,7 @@ public:
 
   int getWidth() const;
   int getHeight() const;
+  int getFPS() const;
 
   std::string getErrorMessage(int errorCode);
   void printInfos();

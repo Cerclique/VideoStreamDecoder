@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
   std::cout << "Hello World!" << std::endl;
 
   int errorCode = 0;
-  VideoStreamDecoder decoder("star_trails.mkv");
+  VideoStreamDecoder decoder("samples/star_trails.mkv");
 
   errorCode = decoder.open();
   if (errorCode < 0) {
@@ -20,6 +20,10 @@ int main(int argc, char** argv) {
   }
 
   uint8_t* frameBuffer;
+  int width = decoder.getWidth();
+  int height = decoder.getHeight();
+  int fps = decoder.getFPS();
+
   while (decoder.isFrameAvailable()) {
     errorCode = decoder.getFrame(&frameBuffer);
     if (errorCode < 0) {
@@ -27,13 +31,13 @@ int main(int argc, char** argv) {
     }
 
     if (frameBuffer != nullptr) {
-      int width = decoder.getWidth();
-      int height = decoder.getHeight();
 
-      cv::Mat imageMat(width, height, CV_8UC3, frameBuffer);
+      cv::Mat imageMat(height, width, CV_8UC3, frameBuffer);
       cv::imshow("Display", imageMat);
+
+      int delay = (static_cast<double>(1) / fps) * 1e3;
+      cv::waitKey(delay);
     }
-    cv::waitKey(33);
   }
   return 0;
 }

@@ -52,6 +52,10 @@ int VideoStreamDecoder::open() {
   /** Retrieve parameter of the codec from stream context **/
   this->pCodecParameters = this->pFormatCtx->streams[this->videoStreamIndex]->codecpar;
 
+  /** Get framerate **/
+  AVRational rationalFPS = this->pFormatCtx->streams[this->videoStreamIndex]->r_frame_rate;
+  this->streamFramerate = rationalFPS.num / rationalFPS.den;
+
   /** Allocate codec context based on codec found **/
   this->pCodecCtx = avcodec_alloc_context3(this->pCodec);
   assert(this->pCodecCtx != nullptr);
@@ -168,6 +172,10 @@ int VideoStreamDecoder::getWidth() const {
 
 int VideoStreamDecoder::getHeight() const {
   return this->streamHeight;
+}
+
+int VideoStreamDecoder::getFPS() const {
+  return this->streamFramerate;
 }
 
 std::string VideoStreamDecoder::getErrorMessage(int errorCode) {
