@@ -129,6 +129,8 @@ bool VideoStreamDecoder::isFrameAvailable() {
 int VideoStreamDecoder::getFrame(uint8_t** frameBuffer) {
   int errorCode = 0;
 
+  /** Clear output pointer **/
+  *frameBuffer = nullptr;
   /** Since avcodec_decode_video2 is deprecated, we need to use send_packet/receive_frame to get frame buffer **/
   errorCode = avcodec_send_packet(this->pCodecCtx, &this->framePacket);
   if (errorCode < 0) {
