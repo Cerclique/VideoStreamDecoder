@@ -23,6 +23,7 @@ int main(int argc, char** argv) {
   int width = decoder.getWidth();
   int height = decoder.getHeight();
   int fps = decoder.getFPS();
+  int delay = (static_cast<double>(1) / fps) * 1e3;
 
   while (decoder.isFrameAvailable()) {
     errorCode = decoder.getFrame(&frameBuffer);
@@ -35,7 +36,6 @@ int main(int argc, char** argv) {
       cv::Mat imageMat(height, width, CV_8UC3, frameBuffer);
       cv::imshow("Display", imageMat);
 
-      int delay = (static_cast<double>(1) / fps) * 1e3;
       cv::waitKey(delay);
     }
   }
