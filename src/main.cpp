@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include <opencv2/imgproc.hpp>
-#include <opencv2/highgui.hpp>
+// #include <opencv2/imgproc.hpp>
+// #include <opencv2/highgui.hpp>
 
 #include "VideoStreamDecoder.hpp"
 
@@ -34,11 +34,12 @@ int main(int argc, char** argv) {
     }
 
     if (frameBuffer != nullptr) {
-
+      /**
       cv::Mat imageMat(height, width, CV_8UC3, frameBuffer);
       cv::imshow("Display", imageMat);
 
       cv::waitKey(delay);
+      **/
     }
 
   }
