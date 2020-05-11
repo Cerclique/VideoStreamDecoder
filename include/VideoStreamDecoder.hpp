@@ -20,10 +20,12 @@ private:
   AVCodecParameters* pCodecParameters = nullptr;
   AVCodecContext* pCodecCtx = nullptr;
   int videoStreamIndex = -1;
+  uint8_t* pictureBuffer = nullptr;
   AVFrame* pFrameRaw = nullptr;
   AVFrame* pFrameBGR = nullptr;
   AVPacket framePacket;
   AVPixelFormat pixelFormat = AV_PIX_FMT_BGR24;
+  SwsContext* pScalerCtx = nullptr;
   int streamFramerate = -1;
   int streamWidth = 0;
   int streamHeight = 0;
@@ -33,9 +35,9 @@ private:
 
 public:
   VideoStreamDecoder(const std::string _streamPath);
-  ~VideoStreamDecoder();
 
   int open();
+  void close();
   bool isFrameAvailable();
   int getFrame(uint8_t** frameBuffer);
 

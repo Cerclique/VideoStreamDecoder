@@ -4,28 +4,6 @@ VideoStreamDecoder::VideoStreamDecoder(const std::string _streamPath) {
   this->streamPath = _streamPath;
 }
 
-VideoStreamDecoder::~VideoStreamDecoder() {
-  /** TODO -- Print address of each pointer when destructor is called to check if memory is freed **/
-
-  /**  Codec should be free automatically when closing the file. But just in case ... **/
-
-  if (this->pFrameBGR != nullptr) {
-    av_frame_free(&this->pFrameBGR);
-  }
-
-  if (this->pFrameRaw != nullptr) {
-    av_frame_free(&this->pFrameRaw);
-  }
-
-  if (this->pCodec != nullptr) {
-    av_free(&this->pCodec);
-  }
-
-  if (this->pFormatCtx != nullptr) {
-    avformat_close_input(&this->pFormatCtx);
-  }
-}
-
 int VideoStreamDecoder::open() {
 
   int errorCode = 0;
@@ -46,7 +24,7 @@ int VideoStreamDecoder::open() {
     return errorCode;
   }
 
-  /** A positive errorCode refer to the stream index found */
+  /** A positive errorCode of av_find_best_stream refer to the stream index found */
   this->videoStreamIndex = errorCode;
 
   /** Retrieve parameter of the codec from stream context **/
@@ -78,6 +56,47 @@ int VideoStreamDecoder::open() {
   return errorCode;
 }
 
+void VideoStreamDecoder::close() {
+  /**
+      - avformat/avcodec functions automatically set pointer to nullptr.
+      - For swsd_freeContext(), we need to do it manually.
+      - pCodec and pCodecParameters are not dynamically allocated so we just have to make them point to nullptr at the end
+  **/
+  if (this->pScalerCtx != nullptr) {
+    sws_freeContext(this->pScalerCtx);
+    this->pScalerCtx = nullptr;
+  }
+
+  if (this->pFrameBGR != nullptr) {
+    av_frame_free(&this->pFrameBGR);
+  }
+
+  if (this->pFrameRaw != nullptr) {
+    av_frame_free(&this->pFrameRaw);
+  }
+
+  if (this->pictureBuffer != nullptr) {
+    av_free(this->pictureBuffer);
+  }
+
+  if (this->pCodecParameters != nullptr) {
+    this->pCodecParameters = nullptr;
+  }
+
+  if (this->pCodec != nullptr) {
+    this->pCodec = nullptr;
+  }
+
+  if (this->pCodecCtx != nullptr) {
+    avcodec_free_context(&this->pCodecCtx);
+  }
+
+  avformat_close_input(&this->pFormatCtx);
+
+  /** Set boolean to false **/
+  this->isStreamOpened = false;
+}
+
 int VideoStreamDecoder::allocateFrameBuffer() {
   int errorCode = 0;
 
@@ -87,7 +106,7 @@ int VideoStreamDecoder::allocateFrameBuffer() {
 
   /** Compure size (in bytes) needed to store an image **/
   const int bufferSize = av_image_get_buffer_size(this->pixelFormat, this->streamWidth, this->streamHeight, 1);
-  uint8_t* pictureBuffer = static_cast<uint8_t*>(av_malloc(bufferSize * sizeof(uint8_t)));
+  this->pictureBuffer = static_cast<uint8_t*>(av_malloc(bufferSize * sizeof(uint8_t)));
   assert(pictureBuffer != nullptr);
 
   /** Allocate frames **/
@@ -97,12 +116,13 @@ int VideoStreamDecoder::allocateFrameBuffer() {
   assert(pFrameBGR != nullptr);
 
   /** Fill pFrameBGR with previously allocated pictureBuffer **/
-  errorCode = av_image_fill_arrays(pFrameBGR->data, pFrameBGR->linesize, pictureBuffer, pixelFormat, this->streamWidth, this->streamHeight, 1);
+  errorCode = av_image_fill_arrays(pFrameBGR->data, pFrameBGR->linesize, this->pictureBuffer, pixelFormat, this->streamWidth, this->streamHeight, 1);
+
+  /** Allocate scaler context to convert raw frame to BGR frame  **/
+  this->pScalerCtx = sws_getCachedContext(nullptr, this->streamWidth, this->streamHeight, this->pCodecCtx->pix_fmt, this->streamWidth, this->streamHeight, this->pixelFormat, SWS_BICUBIC, nullptr, nullptr, nullptr);
 
   /** Once everything is opended/allocated, set the boolean to true. **/
   this->isStreamOpened = true;
-
-  /** Free pictureBuffer at the end of fonction or when destructor is called ? **/
 
   return errorCode;
 }
@@ -158,12 +178,9 @@ int VideoStreamDecoder::getFrame(uint8_t** frameBuffer) {
 }
 
 void VideoStreamDecoder::convertFrameToBGR() {
-  SwsContext* pScalerCtx = sws_getCachedContext(nullptr, this->streamWidth, this->streamHeight, this->pCodecCtx->pix_fmt, this->streamWidth, this->streamHeight, this->pixelFormat, SWS_BICUBIC, nullptr, nullptr, nullptr);
   assert(pScalerCtx != nullptr);
 
-  sws_scale(pScalerCtx, this->pFrameRaw->data, this->pFrameRaw->linesize, 0, this->streamHeight, this->pFrameBGR->data, this->pFrameBGR->linesize);
-
-  sws_freeContext(pScalerCtx);
+  sws_scale(this->pScalerCtx, this->pFrameRaw->data, this->pFrameRaw->linesize, 0, this->streamHeight, this->pFrameBGR->data, this->pFrameBGR->linesize);
 }
 
 int VideoStreamDecoder::getWidth() const {

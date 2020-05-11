@@ -19,6 +19,8 @@ int main(int argc, char** argv) {
     std::cerr << decoder.getErrorMessage(errorCode) << std::endl;
   }
 
+  decoder.printInfos();
+
   uint8_t* frameBuffer;
   int width = decoder.getWidth();
   int height = decoder.getHeight();
@@ -38,6 +40,10 @@ int main(int argc, char** argv) {
 
       cv::waitKey(delay);
     }
+
   }
+
+  decoder.close();
+
   return 0;
 }
