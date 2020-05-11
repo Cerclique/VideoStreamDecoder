@@ -40,12 +40,12 @@ INCLUDE_MODULE_FFMPEG=
 LINK_MODULE_FFMPEG=-lavcodec -lavformat -lswscale -lavutil
 
 # Module OPENCV
-INCLUDE_MODULE_OPENCV=`pkg-config --cflags opencv4`
-LINK_MODULE_OPENCV=`pkg-config --libs opencv4`
+#INCLUDE_MODULE_OPENCV=`pkg-config --cflags opencv4`
+#LINK_MODULE_OPENCV=`pkg-config --libs opencv4`
 
 # Include and link flags based on INCLUDE_DIR (default) and modules defined previously
-INCLUDE_FLAGS= -I$(INCLUDE_DIR) $(INCLUDE_MODULE_OPENCV)
-LDFLAGS= $(LINK_MODULE_FFMPEG) $(LINK_MODULE_OPENCV)
+INCLUDE_FLAGS= -I$(INCLUDE_DIR)
+LDFLAGS= $(LINK_MODULE_FFMPEG)
 
 # Name of the executable/library
 PROCESS_NAME= VideoStreamDecoder
@@ -59,7 +59,7 @@ LOGFILE=build.log
 
 .PHONY: all
 .ONESHELL:
-all: CLEAN_BEFORE_BUILD $(PROCESS_NAME) 
+all: CLEAN_BEFORE_BUILD $(PROCESS_NAME)
 
 $(PROCESS_NAME): $(OBJECTS)
 	@$(PRINT_PROCESS_NAME)
