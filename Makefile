@@ -63,12 +63,12 @@ all: CLEAN_BEFORE_BUILD $(PROCESS_NAME)
 
 $(PROCESS_NAME): $(OBJECTS)
 	@$(PRINT_PROCESS_NAME)
-	@$(CXX) $(LDFLAGS) $^ -o $@  >> $(LOGFILE) 2>&1
+	@$(CXX) $(LDFLAGS) $^ -o $@  # >> $(LOGFILE) 2>&1
 	@$(PRINT_STATUS)
 
 $(OBJECTS_DIR)/%.o: $(SOURCES_DIR)/%.cpp
 	@$(PRINT_NAME)
-	@$(CXX) $(CXXFLAGS) $(INCLUDE_FLAGS) $< -o $@ >> $(LOGFILE) 2>&1
+	@$(CXX) $(CXXFLAGS) $(INCLUDE_FLAGS) $< -o $@ # >> $(LOGFILE) 2>&1
 	@$(PRINT_STATUS)
 
 .PHONY: clean
