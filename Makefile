@@ -9,15 +9,14 @@ RED=\033[0;31m
 GREEN=\033[0;32m
 NC=\033[0m
 
-
-# Status variable (used for CI)
-VAR_STATUS = 0
+define display_status
+	@if [ $(1) = 0 ]; then echo -e '$(GREEN)$(BOLD_B)[SUCCESS]$(BOLD_E)$(NC)'; else echo -e '$(RED)$(BOLD_B)[FAIL]$(BOLD_E)$(NC)'; fi
+endef
 
 # Macro for better display
 PRINT_NAME=@printf "%30s\t" $<
-PRINT_STATUS=@if [ $(VAR_STATUS) -eq 0 ]; then echo -e '$(GREEN)$(BOLD_B)[SUCCESS]$(BOLD_E)$(NC)'; else echo -e '$(RED)$(BOLD_B)[FAIL]$(BOLD_E)$(NC)'; fi
+PRINT_STATUS=@if [ $$? = 0 ]; then echo -e '$(GREEN)$(BOLD_B)[SUCCESS]$(BOLD_E)$(NC)'; else echo -e '$(RED)$(BOLD_B)[FAIL]$(BOLD_E)$(NC)'; fi
 PRINT_PROCESS_NAME=@printf "\n%30s\t" $@
-
 
 # Name of source, include and object folder (relative to Makefile path)
 SOURCES_DIR=src
@@ -68,15 +67,15 @@ all: CLEAN_BEFORE_BUILD $(PROCESS_NAME)
 
 $(PROCESS_NAME): $(OBJECTS)
 	@$(PRINT_PROCESS_NAME)
-	@$(CXX) $(LDFLAGS) $^ -o $@  # >> $(LOGFILE) 2>&1
-	@VAR_STATUS = $$?
-	@$(PRINT_STATUS)
+	@$(CXX) $(LDFLAGS) $^ -o $@ >> $(LOGFILE) 2>&1
+	$(call display_status, $$?)
+#	@$(PRINT_STATUS)
 
 $(OBJECTS_DIR)/%.o: $(SOURCES_DIR)/%.cpp
 	@$(PRINT_NAME)
-	@$(CXX) $(CXXFLAGS) $(INCLUDE_FLAGS) $< -o $@ # >> $(LOGFILE) 2>&1
-	@VAR_STATUS = $$?
-	@$(PRINT_STATUS)
+	@$(CXX) $(CXXFLAGS) $(INCLUDE_FLAGS) $< -o $@ >> $(LOGFILE) 2>&1
+	$(call display_status, $$?)
+#	@$(PRINT_STATUS)
 
 .PHONY: clean
 clean: CLEAN_BEFORE_BUILD
