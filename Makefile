@@ -10,7 +10,7 @@ GREEN=\033[0;32m
 NC=\033[0m
 
 define display_status
-	@if [ $(1) = 0 ]; then echo -e '$(GREEN)$(BOLD_B)[SUCCESS]$(BOLD_E)$(NC)'; else echo -e '$(RED)$(BOLD_B)[FAIL]$(BOLD_E)$(NC)'; fi
+	@if [ $(1) = 0 ]; then echo -e '$(GREEN)$(BOLD_B)[SUCCESS]$(BOLD_E)$(NC)'; else echo -e '$(RED)$(BOLD_B)[FAIL]$(BOLD_E)$(NC)'; exit $(1);fi
 endef
 
 # Macro for better display
@@ -69,13 +69,11 @@ $(PROCESS_NAME): $(OBJECTS)
 	@$(PRINT_PROCESS_NAME)
 	@$(CXX) $(LDFLAGS) $^ -o $@ >> $(LOGFILE) 2>&1
 	$(call display_status, $$?)
-#	@$(PRINT_STATUS)
 
 $(OBJECTS_DIR)/%.o: $(SOURCES_DIR)/%.cpp
 	@$(PRINT_NAME)
 	@$(CXX) $(CXXFLAGS) $(INCLUDE_FLAGS) $< -o $@ >> $(LOGFILE) 2>&1
 	$(call display_status, $$?)
-#	@$(PRINT_STATUS)
 
 .PHONY: clean
 clean: CLEAN_BEFORE_BUILD
