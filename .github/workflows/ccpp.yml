@@ -14,10 +14,12 @@ jobs:
     - uses: actions/checkout@v2
     - name: Configure
       run: |
+           mkdir bin
            pwd
            ls -all
-           mkdir bin
     - name: Compilation
       run: make
     - name: Logfile
-      run: cat logfile.txt
+      run: |
+           ls -all
+           cat build.log
