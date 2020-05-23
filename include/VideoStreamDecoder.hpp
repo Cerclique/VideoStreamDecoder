@@ -39,7 +39,7 @@ public:
   int open();
   void close();
   bool isFrameAvailable();
-  int getFrame(uint8_t** frameBuffer);
+  int getFrame(uint8_t* &frameBuffer);
 
   int getWidth() const;
   int getHeight() const;

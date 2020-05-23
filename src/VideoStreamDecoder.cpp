@@ -150,11 +150,11 @@ bool VideoStreamDecoder::isFrameAvailable() {
   return frameAvailable;
 }
 
-int VideoStreamDecoder::getFrame(uint8_t** frameBuffer) {
+int VideoStreamDecoder::getFrame(uint8_t* &frameBuffer) {
   int errorCode = 0;
 
   /** Clear output pointer **/
-  *frameBuffer = nullptr;
+  frameBuffer = nullptr;
   /** Since avcodec_decode_video2 is deprecated, we need to use send_packet/receive_frame to get frame buffer **/
   errorCode = avcodec_send_packet(this->pCodecCtx, &this->framePacket);
   if (errorCode < 0) {
@@ -169,7 +169,7 @@ int VideoStreamDecoder::getFrame(uint8_t** frameBuffer) {
   /** Convert raw frame to BGR frame. **/
   this->convertFrameToBGR();
 
-  *frameBuffer = this->pFrameBGR->data[0];
+  frameBuffer = this->pFrameBGR->data[0];
 
   /** Packet need to be unref/reset to be able to get next frame **/
   av_packet_unref(&this->framePacket);
