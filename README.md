@@ -23,6 +23,7 @@ This project take the input file as argument.
 
 ## TODO
 
+- [ ] Class attribute space/memory optimization
 - [ ] Compile as lib/dll
 - [ ] Doxygen documentation
 - [ ] Update example
