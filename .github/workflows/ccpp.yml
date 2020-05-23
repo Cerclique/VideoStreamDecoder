@@ -8,11 +8,13 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
-    - name: make
+    - name: Configure
+      run: mkdir bin
+    - name: Compilation
       run: make
-
+    - name: Logfile
+      run: cat logfile.txt
