@@ -41,10 +41,10 @@ LINK_MODULE_FFMPEG= -lavcodec -lavformat -lavutil -lswscale
 
 # Module OpenCV
 INCLUDE_MODULE_OPENCV= `pkg-config --cflags opencv4`
-LINK_MODULE_YYY= `pkg-config --libs opencv4`
+LINK_MODULE_OPENCV= `pkg-config --libs opencv4`
 
 # Include and link flags based on INCLUDE_DIR (default) and modules defined previously
-INCLUDE_FLAGS= -I$(INCLUDE_DIR) $(INCLUDE_MODULE_OPENCV4)
+INCLUDE_FLAGS= -I$(INCLUDE_DIR) $(INCLUDE_MODULE_OPENCV)
 LDFLAGS= $(LINK_MODULE_FFMPEG) $(LINK_MODULE_OPENCV)
 
 # Name of the executable/library
