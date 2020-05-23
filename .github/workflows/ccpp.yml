@@ -12,14 +12,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Configure
+
+    - name: Pre-build
       run: |
+           apt install ffmpeg
            mkdir bin
-           pwd
-           ls -all
+
     - name: Compilation
       run: make
-    - name: Logfile
+
+    - name: Post-Build
       run: |
-           ls -all
            cat build.log
