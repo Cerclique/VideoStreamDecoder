@@ -13,7 +13,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Configure
-      run: mkdir bin
+      run: |
+           pwd
+           ls -all
+           mkdir bin
     - name: Compilation
       run: make
     - name: Logfile
