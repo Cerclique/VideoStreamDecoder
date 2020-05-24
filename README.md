@@ -21,9 +21,3 @@ This project take the input file as argument.
 
 ```./VideoStreamDecoder <path_to_file>```
 
-## TODO
-
-- [ ] Class attribute space/memory optimization
-- [ ] Compile as lib/dll
-- [ ] Doxygen documentation
-- [ ] Update example
