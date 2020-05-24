@@ -33,7 +33,7 @@ OBJECTS=$(patsubst $(SOURCES_DIR)/%.cpp,$(OBJECTS_DIR)/%.o,$(SOURCES))
 CXX= clang++
 
 # Compilation flags
-CXXFLAGS= -c -g -Wall -Wextra -std=c++17
+CXXFLAGS= -c -Wall -Wextra -std=c++17 -O3
 
 # Module FFMpeg
 INCLUDE_MODULE_FFMPEG=
