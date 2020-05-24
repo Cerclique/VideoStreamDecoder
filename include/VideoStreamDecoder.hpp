@@ -14,21 +14,21 @@ extern "C" {
 class VideoStreamDecoder {
 private:
   std::string streamPath;
-  bool isStreamOpened = false;
   AVFormatContext* pFormatCtx = nullptr;
   AVCodec* pCodec = nullptr;
   AVCodecParameters* pCodecParameters = nullptr;
   AVCodecContext* pCodecCtx = nullptr;
-  int videoStreamIndex = -1;
   uint8_t* pictureBuffer = nullptr;
   AVFrame* pFrameRaw = nullptr;
   AVFrame* pFrameBGR = nullptr;
-  AVPacket framePacket;
-  AVPixelFormat pixelFormat = AV_PIX_FMT_BGR24;
   SwsContext* pScalerCtx = nullptr;
+  AVPixelFormat pixelFormat = AV_PIX_FMT_BGR24;
   int streamFramerate = -1;
-  int streamWidth = 0;
-  int streamHeight = 0;
+  int streamWidth = -1;
+  int streamHeight = -1;
+  int videoStreamIndex = -1;
+  bool isStreamOpened = false;
+  AVPacket framePacket;
 
   int allocateFrameBuffer();
   void convertFrameToBGR();
